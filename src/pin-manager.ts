@@ -179,6 +179,7 @@ export class PinManager {
 		wrapper.classList.add(PINNED_ITEM_CLASS);
 		wrapper.classList.add(isFolder ? "nav-folder" : "nav-file");
 		wrapper.setAttribute("data-path", file.path);
+		wrapper.setAttribute("draggable", "true");
 
 		// Create title element
 		const titleEl = document.createElement("div");
@@ -215,22 +216,122 @@ export class PinManager {
 			}
 		});
 
-		// Add context menu handler
+		// Add context menu handler with unpin option
 		titleEl.addEventListener("contextmenu", (evt: MouseEvent) => {
 			evt.preventDefault();
 			evt.stopPropagation();
 
-			// Trigger the file menu
+			const menu = new Menu();
+
+			// Add unpin option at the top
+			menu.addItem((item) => {
+				item
+					.setTitle("Unpin from top")
+					.setIcon("pin-off")
+					.onClick(async () => {
+						await this.unpinItem(file.path);
+					});
+			});
+
+			// Add separator
+			menu.addSeparator();
+
+			// Trigger the file menu to add default options
 			this.app.workspace.trigger(
 				"file-menu",
-				new Menu(),
+				menu,
 				file,
 				"file-explorer-context-menu",
 				null
 			);
+
+			// Show menu at cursor position
+			menu.showAtMouseEvent(evt);
 		});
 
+		// Add drag and drop handlers
+		this.addDragDropHandlers(wrapper, file.path);
+
 		return wrapper;
+	}
+
+	/**
+	 * Add drag and drop handlers for reordering
+	 */
+	private addDragDropHandlers(element: HTMLElement, path: string): void {
+		// Drag start
+		element.addEventListener("dragstart", (evt: DragEvent) => {
+			if (evt.dataTransfer) {
+				evt.dataTransfer.effectAllowed = "move";
+				evt.dataTransfer.setData("text/plain", path);
+				element.classList.add("pin-dragging");
+			}
+		});
+
+		// Drag end
+		element.addEventListener("dragend", () => {
+			element.classList.remove("pin-dragging");
+			// Remove all drag-over classes
+			document.querySelectorAll(".pin-drag-over").forEach((el) => {
+				el.classList.remove("pin-drag-over");
+			});
+		});
+
+		// Drag over
+		element.addEventListener("dragover", (evt: DragEvent) => {
+			evt.preventDefault();
+			if (evt.dataTransfer) {
+				evt.dataTransfer.dropEffect = "move";
+			}
+			element.classList.add("pin-drag-over");
+		});
+
+		// Drag leave
+		element.addEventListener("dragleave", () => {
+			element.classList.remove("pin-drag-over");
+		});
+
+		// Drop
+		element.addEventListener("drop", (evt: DragEvent) => {
+			evt.preventDefault();
+			evt.stopPropagation();
+			element.classList.remove("pin-drag-over");
+
+			if (!evt.dataTransfer) return;
+
+			const draggedPath = evt.dataTransfer.getData("text/plain");
+			const targetPath = path;
+
+			if (draggedPath === targetPath) return;
+
+			// Reorder the pinned items
+			void this.reorderPinnedItems(draggedPath, targetPath);
+		});
+	}
+
+	/**
+	 * Reorder pinned items by moving draggedPath before targetPath
+	 */
+	private async reorderPinnedItems(
+		draggedPath: string,
+		targetPath: string
+	): Promise<void> {
+		const items = this.plugin.settings.pinnedItems;
+		const draggedIndex = items.indexOf(draggedPath);
+		const targetIndex = items.indexOf(targetPath);
+
+		if (draggedIndex === -1 || targetIndex === -1) return;
+
+		// Remove dragged item
+		items.splice(draggedIndex, 1);
+
+		// Insert at new position
+		const newTargetIndex = items.indexOf(targetPath);
+		items.splice(newTargetIndex, 0, draggedPath);
+
+		// Save and refresh
+		await this.plugin.saveSettings();
+		this.refreshFileExplorer();
 	}
 
 	/**
