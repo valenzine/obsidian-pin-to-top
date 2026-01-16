@@ -8,7 +8,7 @@ An Obsidian plugin that lets you pin folders and notes to the top of the file ex
 - 🖱️ **Right-click context menu** - easily pin/unpin any item
 - ⌨️ **Command palette** support for keyboard-driven workflows
 - 💾 **Persistent pins** - your pins are saved and restored across sessions
-- 🎨 **Visual indicators** - pinned items are clearly marked with a pin emoji
+- 🎨 **Visual indicators** - pinned items are clearly marked with a pin icon
 - 🔄 **Auto-updates** - pins automatically update when files are renamed or deleted
 
 ## Usage
@@ -17,7 +17,7 @@ An Obsidian plugin that lets you pin folders and notes to the top of the file ex
 
 1. **Right-click** on any file or folder in the file explorer
 2. Select **"Pin to top"** from the context menu
-3. The item will appear at the top of the file explorer with a 📌 indicator
+3. The item will appear at the top of the file explorer with a pin icon indicator
 
 ### Unpin an item
 
