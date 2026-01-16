@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "obsidian-pin-to-top",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "Pin folders and notes to the top of the file explorer for quick access",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {
@@ -10,8 +10,13 @@
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
 		"lint": "eslint ."
 	},
-	"keywords": [],
-	"license": "0-BSD",
+	"keywords": [
+		"obsidian",
+		"plugin",
+		"pin",
+		"file-explorer"
+	],
+	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
 		"esbuild": "0.25.5",

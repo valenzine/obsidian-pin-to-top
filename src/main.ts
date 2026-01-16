@@ -1,99 +1,156 @@
-import {App, Editor, MarkdownView, Modal, Notice, Plugin} from 'obsidian';
-import {DEFAULT_SETTINGS, MyPluginSettings, SampleSettingTab} from "./settings";
+import { Menu, Notice, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
+import { DEFAULT_SETTINGS, PinSettingTab } from "./settings";
+import type { PinPluginSettings } from "./types";
+import { PinManager } from "./pin-manager";
 
-// Remember to rename these classes and interfaces!
-
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class PinPlugin extends Plugin {
+	settings: PinPluginSettings;
+	pinManager: PinManager;
 
 	async onload() {
 		await this.loadSettings();
 
-		// This creates an icon in the left ribbon.
-		this.addRibbonIcon('dice', 'Sample', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-		});
+		// Initialize pin manager
+		this.pinManager = new PinManager(this.app, this);
 
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status bar text');
+		// Clean up any deleted items on load
+		await this.pinManager.cleanupDeletedItems();
 
-		// This adds a simple command that can be triggered anywhere
+		// Add settings tab
+		this.addSettingTab(new PinSettingTab(this.app, this));
+
+		// Register context menu for files
+		this.registerEvent(
+			this.app.workspace.on("file-menu", (menu: Menu, file: TAbstractFile) => {
+				if (file instanceof TFile || file instanceof TFolder) {
+					const isPinned = this.pinManager.isPinned(file.path);
+
+					menu.addItem((item) => {
+						item
+							.setTitle(isPinned ? "Unpin from top" : "Pin to top")
+							.setIcon(isPinned ? "pin-off" : "pin")
+							.onClick(async () => {
+								await this.pinManager.togglePin(file.path);
+								new Notice(
+									isPinned
+										? `Unpinned: ${file.name}`
+										: `Pinned: ${file.name}`
+								);
+							});
+					});
+				}
+			})
+		);
+
+		// Command: Pin current file
 		this.addCommand({
-			id: 'open-modal-simple',
-			name: 'Open modal (simple)',
-			callback: () => {
-				new SampleModal(this.app).open();
-			}
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'replace-selected',
-			name: 'Replace selected content',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				editor.replaceSelection('Sample editor command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-modal-complex',
-			name: 'Open modal (complex)',
+			id: "pin-current-file",
+			name: "Pin current file",
 			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
+				const file = this.app.workspace.getActiveFile();
+				if (file && !this.pinManager.isPinned(file.path)) {
 					if (!checking) {
-						new SampleModal(this.app).open();
+						void this.pinManager.pinItem(file.path);
+						new Notice(`Pinned: ${file.name}`);
 					}
-
-					// This command will only show up in Command Palette when the check function returns true
 					return true;
 				}
 				return false;
-			}
+			},
 		});
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			new Notice("Click");
+		// Command: Unpin current file
+		this.addCommand({
+			id: "unpin-current-file",
+			name: "Unpin current file",
+			checkCallback: (checking: boolean) => {
+				const file = this.app.workspace.getActiveFile();
+				if (file && this.pinManager.isPinned(file.path)) {
+					if (!checking) {
+						void this.pinManager.unpinItem(file.path);
+						new Notice(`Unpinned: ${file.name}`);
+					}
+					return true;
+				}
+				return false;
+			},
 		});
 
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
+		// Command: Toggle pin for current file
+		this.addCommand({
+			id: "toggle-pin-current-file",
+			name: "Toggle pin for current file",
+			checkCallback: (checking: boolean) => {
+				const file = this.app.workspace.getActiveFile();
+				if (file) {
+					if (!checking) {
+						const isPinned = this.pinManager.isPinned(file.path);
+						void this.pinManager.togglePin(file.path);
+						new Notice(
+							isPinned
+								? `Unpinned: ${file.name}`
+								: `Pinned: ${file.name}`
+						);
+					}
+					return true;
+				}
+				return false;
+			},
+		});
 
+		// Handle file rename
+		this.registerEvent(
+			this.app.vault.on("rename", (file: TAbstractFile, oldPath: string) => {
+				void this.pinManager.handleRename(file, oldPath);
+			})
+		);
+
+		// Handle file delete
+		this.registerEvent(
+			this.app.vault.on("delete", (file: TAbstractFile) => {
+				void this.pinManager.handleDelete(file);
+			})
+		);
+
+		// Refresh file explorer on layout change
+		this.registerEvent(
+			this.app.workspace.on("layout-change", () => {
+				// Delay slightly to ensure DOM is ready
+				setTimeout(() => {
+					this.pinManager.refreshFileExplorer();
+				}, 100);
+			})
+		);
+
+		// Initial refresh after a short delay to ensure file explorer is loaded
+		this.app.workspace.onLayoutReady(() => {
+			setTimeout(() => {
+				this.pinManager.refreshFileExplorer();
+			}, 500);
+		});
 	}
 
 	onunload() {
+		// Clean up pinned containers from DOM
+		const pinnedContainers = document.querySelectorAll(
+			".pin-to-top-container"
+		);
+		pinnedContainers.forEach((container) => container.remove());
+
+		// Remove pinned classes
+		const pinnedItems = document.querySelectorAll(".pin-to-top-pinned");
+		pinnedItems.forEach((item) => item.classList.remove("pin-to-top-pinned"));
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<MyPluginSettings>);
+		this.settings = Object.assign(
+			{},
+			DEFAULT_SETTINGS,
+			await this.loadData()
+		) as PinPluginSettings;
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		let {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
 	}
 }

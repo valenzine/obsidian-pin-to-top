@@ -1,8 +1,86 @@
 /*
+ * Pin to Top Plugin Styles
+ * 
+ * Styles for pinned items in the file explorer
+ */
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+/* Pinned items container at the top of file explorer */
+.pin-to-top-container {
+	border-bottom: 1px solid var(--background-modifier-border);
+	padding-bottom: 4px;
+	margin-bottom: 4px;
+}
 
-If your plugin does not need CSS, delete this file.
+/* Add pin icon only to direct pinned items (not nested content) */
+.pin-to-top-container > .pin-to-top-item > .nav-file-title::before,
+.pin-to-top-container > .pin-to-top-item > .nav-folder-title::before {
+	content: "📌 ";
+	font-size: 0.85em;
+	opacity: 0.8;
+    padding-right: 5px;
+}
 
-*/
+/* Subtle highlight for pinned items in the container */
+.pin-to-top-container > .pin-to-top-item > .nav-file-title,
+.pin-to-top-container > .pin-to-top-item > .nav-folder-title {
+	background-color: var(--background-modifier-hover);
+	border-radius: 4px;
+}
+
+/* Style pinned items to look clickable */
+.pin-to-top-item {
+	cursor: pointer;
+}
+
+.pin-to-top-item .nav-folder-title,
+.pin-to-top-item .nav-file-title {
+	padding: 2px 6px;
+}
+
+/* Hide collapse indicator for pinned folders (they act as links) */
+.pin-to-top-item .nav-folder-collapse-indicator {
+	display: none;
+}
+
+/* Mark original pinned items with a subtle indicator */
+.nav-folder-children > .pin-to-top-pinned > .nav-file-title::after,
+.nav-folder-children > .pin-to-top-pinned > .nav-folder-title::after {
+	content: " 📌";
+	font-size: 0.7em;
+	opacity: 0.5;
+}
+
+/* Settings tab styles */
+.pin-to-top-settings-list {
+	margin-top: 10px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	max-height: 300px;
+	overflow-y: auto;
+}
+
+.pin-to-top-settings-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 12px;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.pin-to-top-settings-item:last-child {
+	border-bottom: none;
+}
+
+.pin-to-top-settings-path {
+	flex: 1;
+	font-family: var(--font-monospace);
+	font-size: 0.9em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	margin-right: 10px;
+}
+
+.pin-to-top-unpin-button {
+	flex-shrink: 0;
+}

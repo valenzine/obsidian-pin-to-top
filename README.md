@@ -1,90 +1,94 @@
-# Obsidian Sample Plugin
+# Pin to Top
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+An Obsidian plugin that lets you pin folders and notes to the top of the file explorer for quick access.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## Features
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+- 📌 **Pin files and folders** to the top of the file explorer
+- 🖱️ **Right-click context menu** - easily pin/unpin any item
+- ⌨️ **Command palette** support for keyboard-driven workflows
+- 💾 **Persistent pins** - your pins are saved and restored across sessions
+- 🎨 **Visual indicators** - pinned items are clearly marked with a pin emoji
+- 🔄 **Auto-updates** - pins automatically update when files are renamed or deleted
 
-## First time developing plugins?
+## Usage
 
-Quick starting guide for new plugin devs:
+### Pin an item
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+1. **Right-click** on any file or folder in the file explorer
+2. Select **"Pin to top"** from the context menu
+3. The item will appear at the top of the file explorer with a 📌 indicator
 
-## Releasing new releases
+### Unpin an item
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+1. **Right-click** on a pinned item
+2. Select **"Unpin from top"** from the context menu
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+### Command palette
 
-## Adding your plugin to the community plugin list
+You can also use the command palette (`Cmd/Ctrl + P`) to:
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+- **Pin current file** - pins the currently active file
+- **Unpin current file** - unpins the currently active file
+- **Toggle pin for current file** - toggles the pin state
 
-## How to use
+### Settings
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+Go to **Settings → Community plugins → Pin to Top** to:
 
-## Manually installing the plugin
+- View all pinned items
+- Unpin individual items
+- Clear all pins at once
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+## Installation
 
-## Improve code quality with eslint
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/obsidianmd/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
+### From Obsidian Community Plugins
 
-## Funding URL
+1. Open **Settings → Community plugins**
+2. Disable **Safe mode**
+3. Click **Browse** and search for "Pin to Top"
+4. Click **Install**, then **Enable**
 
-You can include funding URLs where people who use your plugin can financially support it.
+### Manual installation
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+1. Download `main.js`, `styles.css`, and `manifest.json` from the latest release
+2. Create a folder: `<vault>/.obsidian/plugins/obsidian-pin-to-top/`
+3. Copy the downloaded files into this folder
+4. Reload Obsidian
+5. Enable the plugin in **Settings → Community plugins**
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
+## Development
+
+```bash
+# Clone the repository
+git clone https://github.com/valenzine/obsidian-pin.git
+
+# Install dependencies
+npm install
+
+# Start development build (watch mode)
+npm run dev
+
+# Production build
+npm run build
+
+# Lint code
+npm run lint
 ```
 
-If you have multiple URLs, you can also do:
+### Testing locally
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
+Copy `main.js`, `styles.css`, and `manifest.json` to:
+```
+<vault>/.obsidian/plugins/obsidian-pin-to-top/
 ```
 
-## API Documentation
+## License
 
-See https://docs.obsidian.md
+MIT License - see [LICENSE](LICENSE) for details.
+
+## Support
+
+If you find this plugin helpful, consider:
+- ⭐ Starring the repository on GitHub
+- 🐛 Reporting bugs or suggesting features via [Issues](https://github.com/valenzine/obsidian-pin/issues)

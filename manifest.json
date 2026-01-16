@@ -1,11 +1,10 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-pin-to-top",
+	"name": "Pin to Top",
 	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"minAppVersion": "1.0.0",
+	"description": "Pin folders and notes to the top of the file explorer for quick access.",
+	"author": "valenzine",
+	"authorUrl": "https://github.com/valenzine",
 	"isDesktopOnly": false
 }
