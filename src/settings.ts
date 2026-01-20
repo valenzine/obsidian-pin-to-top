@@ -20,6 +20,19 @@ export class PinSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Pinned items").setHeading();
 
+		// Auto-expand folders setting
+		new Setting(containerEl)
+			.setName("Auto-expand folders")
+			.setDesc("Automatically open folders when clicking pinned folder items")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.autoExpandFolders)
+					.onChange(async (value) => {
+						this.plugin.settings.autoExpandFolders = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
 		// Display pinned items count
 		new Setting(containerEl)
 			.setName("Pinned items")

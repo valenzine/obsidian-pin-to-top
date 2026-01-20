@@ -70,8 +70,9 @@
 }
 
 /* Mark original pinned items with a subtle indicator */
-.nav-folder-children > .pin-to-top-pinned > .nav-file-title::after,
-.nav-folder-children > .pin-to-top-pinned > .nav-folder-title::after {
+/* Works for both items in folders and root-level items */
+.pin-to-top-pinned > .nav-file-title .nav-file-title-content::after,
+.pin-to-top-pinned > .nav-folder-title::after {
 	content: "";
 	display: inline-block;
 	width: 10px;
