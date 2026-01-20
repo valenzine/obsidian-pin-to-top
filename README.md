@@ -52,7 +52,7 @@ Go to **Settings → Community plugins → Pin to Top** to:
 ### Manual installation
 
 1. Download `main.js`, `styles.css`, and `manifest.json` from the latest release
-2. Create a folder: `<vault>/.obsidian/plugins/obsidian-pin-to-top/`
+2. Create a folder: `<vault>/.obsidian/plugins/pin-to-top/`
 3. Copy the downloaded files into this folder
 4. Reload Obsidian
 5. Enable the plugin in **Settings → Community plugins**
@@ -61,7 +61,7 @@ Go to **Settings → Community plugins → Pin to Top** to:
 
 ```bash
 # Clone the repository
-git clone https://github.com/valenzine/obsidian-pin.git
+git clone https://github.com/valenzine/obsidian-pin-to-top.git
 
 # Install dependencies
 npm install
@@ -80,7 +80,7 @@ npm run lint
 
 Copy `main.js`, `styles.css`, and `manifest.json` to:
 ```
-<vault>/.obsidian/plugins/obsidian-pin-to-top/
+<vault>/.obsidian/plugins/pin-to-top/
 ```
 
 ## License
@@ -91,4 +91,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 If you find this plugin helpful, consider:
 - ⭐ Starring the repository on GitHub
-- 🐛 Reporting bugs or suggesting features via [Issues](https://github.com/valenzine/obsidian-pin/issues)
+- 🐛 Reporting bugs or suggesting features via [Issues](https://github.com/valenzine/obsidian-pin-to-top/issues)
