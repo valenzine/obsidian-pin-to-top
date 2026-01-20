@@ -1,5 +1,6 @@
 import { App, Menu, TAbstractFile, TFile, TFolder, WorkspaceLeaf, setIcon } from "obsidian";
 import type PinPlugin from "./main";
+import type { FileExplorerView } from "./types";
 
 /**
  * CSS class name for pinned items
@@ -211,8 +212,33 @@ export class PinManager {
 				// Open the file
 				void this.app.workspace.openLinkText(file.path, "", false);
 			} else if (file instanceof TFolder) {
-				// Scroll to and reveal the original folder in the file explorer
-				this.revealInFileExplorer(file.path);
+				// Use Obsidian's file explorer API to reveal the folder
+				const leaves = this.getFileExplorerLeaves();
+				if (leaves.length > 0 && leaves[0]) {
+					const fileExplorer = leaves[0].view as unknown as FileExplorerView;
+					
+					// Use revealInFolder to navigate to and expand parent folders
+					if (fileExplorer.revealInFolder) {
+						fileExplorer.revealInFolder(file);
+						
+						// After revealing, try to expand this specific folder if needed
+						if (this.plugin.settings.autoExpandFolders) {
+							setTimeout(() => {
+								const originalItem = this.findOriginalItem(file.path);
+								if (originalItem && originalItem.classList.contains('is-collapsed')) {
+									// Find the collapse icon - it's in the nav-folder-title child
+									const titleEl = originalItem.querySelector('.nav-folder-title');
+									if (titleEl) {
+										const collapseIcon = titleEl.querySelector('.collapse-icon');
+										if (collapseIcon instanceof HTMLElement) {
+											collapseIcon.click();
+										}
+									}
+								}
+							}, 200);
+						}
+					}
+				}
 			}
 		});
 
@@ -335,32 +361,6 @@ export class PinManager {
 	}
 
 	/**
-	 * Reveal and scroll to an item in the file explorer
-	 */
-	private revealInFileExplorer(path: string): void {
-		const leaves = this.getFileExplorerLeaves();
-		for (const leaf of leaves) {
-			const fileExplorer = leaf.view as { revealInFolder?: (file: TAbstractFile) => void };
-			const file = this.app.vault.getAbstractFileByPath(path);
-			if (file && fileExplorer.revealInFolder) {
-				fileExplorer.revealInFolder(file);
-				return;
-			}
-		}
-		
-		// Fallback: try to find and click the original folder
-		const originalItem = this.findOriginalItem(path);
-		if (originalItem) {
-			const titleEl = originalItem.querySelector(".nav-folder-title") as HTMLElement;
-			if (titleEl) {
-				titleEl.click();
-				// Scroll into view
-				originalItem.scrollIntoView({ behavior: "smooth", block: "center" });
-			}
-		}
-	}
-
-	/**
 	 * Find an item in the file explorer by its path
 	 */
 	private findItemByPath(
@@ -375,10 +375,20 @@ export class PinManager {
 		for (let i = 0; i < items.length; i++) {
 			const item = items.item(i);
 			if (!item) continue;
+			
 			// Skip items inside the pinned container
-			if (item.closest(`.${PINNED_CONTAINER_CLASS}`)) {
+			const pinnedContainer = item.closest(`.${PINNED_CONTAINER_CLASS}`);
+			if (pinnedContainer) {
 				continue;
 			}
+			
+			// Also skip if this IS a pinned item (has the pin-to-top-item class)
+			const isPinnedItem = item.classList.contains(PINNED_ITEM_CLASS) || 
+			                    item.closest(`.${PINNED_ITEM_CLASS}`);
+			if (isPinnedItem) {
+				continue;
+			}
+			
 			// Return the nav-file or nav-folder parent
 			const navItem = item.closest(".nav-file, .nav-folder");
 			if (navItem instanceof HTMLElement) {
@@ -393,9 +403,11 @@ export class PinManager {
 	 */
 	private findOriginalItem(path: string): HTMLElement | null {
 		const leaves = this.getFileExplorerLeaves();
+		
 		for (const leaf of leaves) {
 			const container = leaf.view.containerEl;
 			const navFilesContainer = container.querySelector(".nav-files-container");
+			
 			if (navFilesContainer) {
 				const item = this.findItemByPath(navFilesContainer, path);
 				if (item) {

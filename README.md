@@ -11,6 +11,10 @@ An Obsidian plugin that lets you pin folders and notes to the top of the file ex
 - 🎨 **Visual indicators** - pinned items are clearly marked with a pin icon
 - 🔄 **Auto-updates** - pins automatically update when files are renamed or deleted
 
+![demo](img/demo.jpg)
+
+![main UI](img/pin-to-top.gif)
+
 ## Usage
 
 ### Pin an item

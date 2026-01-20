@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-01-20 - v1.0.1
+
+Add: Auto-expand folders feature - clicking a pinned folder now navigates to and expands it in the file explorer
+Add: "Auto-expand folders" setting to enable/disable folder expansion behavior (enabled by default)
+Fix: Folder click functionality - pinned folders now properly reveal and expand in the file explorer
+Fix: Pin icon indicator not showing for root-level files and Obsidian Base files  
+Fix: TypeScript type safety improvements - removed `any` types, added `FileExplorerView` interface
+
 ## 2026-01-16 - v1.0.0
 
 Add: Initial release with pin-to-top functionality for files and folders
