@@ -23,7 +23,7 @@ export class PinSettingTab extends PluginSettingTab {
 		// Auto-expand folders setting
 		new Setting(containerEl)
 			.setName("Auto-expand folders")
-			.setDesc("Automatically open folders when clicking pinned folder items")
+			.setDesc("Automatically expand folders when clicking pinned folder items")
 			.addToggle((toggle) =>
 				toggle
 					.setValue(this.plugin.settings.autoExpandFolders)
