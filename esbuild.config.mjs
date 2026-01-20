@@ -1,6 +1,9 @@
 import esbuild from "esbuild";
 import process from "process";
 import { builtinModules } from 'node:module';
+import path from "path";
+import { fileURLToPath } from 'url';
+import { copyFileSync } from 'fs';
 
 const banner =
 `/*
@@ -10,8 +13,10 @@ if you want to view the source, please visit the github repository of this plugi
 `;
 
 const prod = (process.argv[2] === "production");
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
+const distDir = `${currentDir}/dist`;
 
-const context = await esbuild.context({
+const buildOptions = {
 	banner: {
 		js: banner,
 	},
@@ -37,13 +42,23 @@ const context = await esbuild.context({
 	logLevel: "info",
 	sourcemap: prod ? false : "inline",
 	treeShaking: true,
-	outfile: "main.js",
+	outfile: `${distDir}/main.js`,
 	minify: prod,
-});
+};
 
 if (prod) {
-	await context.rebuild();
-	process.exit(0);
+	// Production build
+	esbuild.build(buildOptions).then(() => {
+		copyFileSync(`${currentDir}/manifest.json`, `${distDir}/manifest.json`);
+		copyFileSync(`${currentDir}/styles.css`, `${distDir}/styles.css`);
+		console.log('✓ Build completed successfully');
+	}).catch(() => process.exit(1));
 } else {
-	await context.watch();
+	// Development build with watch mode
+	esbuild.context(buildOptions).then(ctx => {
+		ctx.watch();
+		copyFileSync(`${currentDir}/manifest.json`, `${distDir}/manifest.json`);
+		copyFileSync(`${currentDir}/styles.css`, `${distDir}/styles.css`);
+		console.log('👀 Watching for changes...');
+	}).catch(() => process.exit(1));
 }
