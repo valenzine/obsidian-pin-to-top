@@ -263,12 +263,13 @@ export class PinManager {
 			menu.addSeparator();
 
 			// Trigger the file menu to add default options
+			// Pass a unique source identifier to prevent duplicate pin/unpin menu items
 			this.app.workspace.trigger(
 				"file-menu",
 				menu,
 				file,
-				"file-explorer-context-menu",
-				null
+				"pin-to-top-pinned-item",
+				{ fromPinnedItem: true }
 			);
 
 			// Show menu at cursor position
