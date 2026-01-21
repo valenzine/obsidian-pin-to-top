@@ -25,12 +25,10 @@ export default class PinPlugin extends Plugin {
 				if (file instanceof TFile || file instanceof TFolder) {
 					// Skip adding menu item if this is from a pinned item's context menu
 					// (the pinned item handler already adds the unpin option)
-					// Check both the source string and the leaf parameter for the flag
-					if (source === "pin-to-top-pinned-item" || 
-					    (leaf && typeof leaf === "object" && "fromPinnedItem" in leaf && leaf.fromPinnedItem)) {
+					// Check the source string for the pinned item flag
+					if (source === "pin-to-top-pinned-item") {
 						return;
 					}
-
 					const isPinned = this.pinManager.isPinned(file.path);
 
 					menu.addItem((item) => {
