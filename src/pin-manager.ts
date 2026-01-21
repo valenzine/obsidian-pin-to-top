@@ -268,8 +268,7 @@ export class PinManager {
 				"file-menu",
 				menu,
 				file,
-				"pin-to-top-pinned-item",
-				{ fromPinnedItem: true }
+				"pin-to-top-pinned-item"
 			);
 
 			// Show menu at cursor position
