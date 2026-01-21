@@ -21,8 +21,14 @@ export default class PinPlugin extends Plugin {
 
 		// Register context menu for files
 		this.registerEvent(
-			this.app.workspace.on("file-menu", (menu: Menu, file: TAbstractFile) => {
+			this.app.workspace.on("file-menu", (menu: Menu, file: TAbstractFile, source: string, leaf?: unknown) => {
 				if (file instanceof TFile || file instanceof TFolder) {
+					// Skip adding menu item if this is from a pinned item's context menu
+					// (the pinned item handler already adds the unpin option)
+					// Check the source string for the pinned item flag
+					if (source === "pin-to-top-pinned-item") {
+						return;
+					}
 					const isPinned = this.pinManager.isPinned(file.path);
 
 					menu.addItem((item) => {
