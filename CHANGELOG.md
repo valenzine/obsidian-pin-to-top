@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-01-21 - v1.0.2
+
+Fix: Context menu duplication - pinned items no longer show duplicate unpin options when right-clicked
+
 ## 2026-01-20 - v1.0.1
 
 Add: Auto-expand folders feature - clicking a pinned folder now navigates to and expands it in the file explorer
