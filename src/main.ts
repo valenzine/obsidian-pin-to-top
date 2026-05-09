@@ -126,6 +126,13 @@ export default class PinPlugin extends Plugin {
 			})
 		);
 
+		// Update active state when the active file changes
+		this.registerEvent(
+			this.app.workspace.on("file-open", () => {
+				this.pinManager.updateActiveStates();
+			})
+		);
+
 		// Initial refresh after a short delay to ensure file explorer is loaded
 		this.app.workspace.onLayoutReady(() => {
 			setTimeout(() => {

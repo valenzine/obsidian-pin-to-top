@@ -44,6 +44,41 @@ export class PinManager {
 	}
 
 	/**
+	 * Update active state for all file explorer pinned containers
+	 */
+	updateActiveStates(): void {
+		const leaves = this.getFileExplorerLeaves();
+		for (const leaf of leaves) {
+			const container = leaf.view.containerEl;
+			const pinnedContainer = container.querySelector(`.${PINNED_CONTAINER_CLASS}`);
+			if (pinnedContainer instanceof HTMLElement) {
+				this.updateActiveState(pinnedContainer);
+			}
+		}
+	}
+
+	/**
+	 * Update active state in a specific pinned container
+	 */
+	private updateActiveState(container: HTMLElement): void {
+		const activeFile = this.app.workspace.getActiveFile();
+		const activePath = activeFile?.path;
+
+		container.querySelectorAll(".pin-to-top-item.is-active").forEach((el) => {
+			el.classList.remove("is-active");
+		});
+
+		if (activePath) {
+			const activeItem = container.querySelector(
+				`.pin-to-top-item[data-path="${CSS.escape(activePath)}"]`
+			);
+			if (activeItem) {
+				activeItem.classList.add("is-active");
+			}
+		}
+	}
+
+	/**
 	 * Check if an item is pinned
 	 */
 	isPinned(path: string): boolean {
@@ -166,6 +201,19 @@ export class PinManager {
 		const pinnedContainer = document.createElement("div");
 		pinnedContainer.classList.add(PINNED_CONTAINER_CLASS);
 
+		// Add section header
+		const header = document.createElement("div");
+		header.classList.add("pin-to-top-header");
+		const headerIcon = document.createElement("span");
+		headerIcon.classList.add("pin-to-top-header-icon");
+		setIcon(headerIcon, "pin");
+		header.appendChild(headerIcon);
+		const headerText = document.createElement("span");
+		headerText.classList.add("pin-to-top-header-text");
+		headerText.textContent = "Pinned";
+		header.appendChild(headerText);
+		pinnedContainer.appendChild(header);
+
 		// Create pinned item elements (not clones - custom lightweight elements)
 		for (const path of pinnedPaths) {
 			const file = this.app.vault.getAbstractFileByPath(path);
@@ -180,6 +228,9 @@ export class PinManager {
 				originalItem.classList.add(PINNED_CLASS);
 			}
 		}
+
+		// Update active state
+		this.updateActiveState(pinnedContainer);
 
 		// Insert pinned container at the top
 		navFilesContainer.insertBefore(pinnedContainer, navFilesContainer.firstChild);
