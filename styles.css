@@ -18,6 +18,8 @@ body.pin-to-top-keep-pinned-items-visible .pin-to-top-container {
 	top: 0;
 	z-index: 10;
 	background-color: var(--background-primary);
+	padding: 6px 0px 0px !important;
+	border-radius: 4px;
 }
 
 /* ===== Section Header ===== */
