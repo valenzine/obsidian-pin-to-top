@@ -264,10 +264,10 @@ export class PinManager {
 			titleEl.appendChild(collapseIcon);
 		}
 
-		// Add file/folder icon
+		// Add file/folder label
 		const iconEl = document.createElement("div");
 		iconEl.classList.add(isFolder ? "nav-folder-title-content" : "nav-file-title-content");
-		iconEl.textContent = file.name;
+		iconEl.textContent = this.getPinnedItemDisplayName(file);
 		titleEl.appendChild(iconEl);
 
 		wrapper.appendChild(titleEl);
@@ -348,6 +348,17 @@ export class PinManager {
 		this.addDragDropHandlers(wrapper, file.path);
 
 		return wrapper;
+	}
+
+	/**
+	 * Get the label shown for a pinned item.
+	 */
+	private getPinnedItemDisplayName(file: TAbstractFile): string {
+		if (file instanceof TFile) {
+			return file.basename;
+		}
+
+		return file.name;
 	}
 
 	/**
