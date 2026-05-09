@@ -30,6 +30,59 @@ export class PinManager {
 	}
 
 	/**
+	 * Apply settings-driven display classes for pin icons.
+	 */
+	applyExplorerDisplaySettings(): void {
+		document.body.classList.toggle(
+			"pin-to-top-show-pinned-top-icon",
+			this.plugin.settings.showPinnedTopIcon
+		);
+		document.body.classList.toggle(
+			"pin-to-top-show-main-explorer-pin-icon",
+			this.plugin.settings.showMainExplorerPinIcon
+		);
+		document.body.classList.toggle(
+			"pin-to-top-keep-pinned-items-visible",
+			this.plugin.settings.keepPinnedItemsVisible
+		);
+	}
+
+	/**
+	 * Update active state for all file explorer pinned containers
+	 */
+	updateActiveStates(): void {
+		const leaves = this.getFileExplorerLeaves();
+		for (const leaf of leaves) {
+			const container = leaf.view.containerEl;
+			const pinnedContainer = container.querySelector(`.${PINNED_CONTAINER_CLASS}`);
+			if (pinnedContainer instanceof HTMLElement) {
+				this.updateActiveState(pinnedContainer);
+			}
+		}
+	}
+
+	/**
+	 * Update active state in a specific pinned container
+	 */
+	private updateActiveState(container: HTMLElement): void {
+		const activeFile = this.app.workspace.getActiveFile();
+		const activePath = activeFile?.path;
+
+		container.querySelectorAll(".pin-to-top-item.is-active").forEach((el) => {
+			el.classList.remove("is-active");
+		});
+
+		if (activePath) {
+			const activeItem = container.querySelector(
+				`.pin-to-top-item[data-path="${CSS.escape(activePath)}"]`
+			);
+			if (activeItem) {
+				activeItem.classList.add("is-active");
+			}
+		}
+	}
+
+	/**
 	 * Check if an item is pinned
 	 */
 	isPinned(path: string): boolean {
@@ -102,6 +155,8 @@ export class PinManager {
 	 * Refresh the file explorer to show pinned items at top
 	 */
 	refreshFileExplorer(): void {
+		this.applyExplorerDisplaySettings();
+
 		const leaves = this.getFileExplorerLeaves();
 
 		for (const leaf of leaves) {
@@ -150,6 +205,21 @@ export class PinManager {
 		const pinnedContainer = document.createElement("div");
 		pinnedContainer.classList.add(PINNED_CONTAINER_CLASS);
 
+		// Add section header when enabled
+		if (this.plugin.settings.showPinnedHeaderLabel) {
+			const header = document.createElement("div");
+			header.classList.add("pin-to-top-header");
+			const headerIcon = document.createElement("span");
+			headerIcon.classList.add("pin-to-top-header-icon");
+			setIcon(headerIcon, "pin");
+			header.appendChild(headerIcon);
+			const headerText = document.createElement("span");
+			headerText.classList.add("pin-to-top-header-text");
+			headerText.textContent = "Pinned";
+			header.appendChild(headerText);
+			pinnedContainer.appendChild(header);
+		}
+
 		// Create pinned item elements (not clones - custom lightweight elements)
 		for (const path of pinnedPaths) {
 			const file = this.app.vault.getAbstractFileByPath(path);
@@ -164,6 +234,9 @@ export class PinManager {
 				originalItem.classList.add(PINNED_CLASS);
 			}
 		}
+
+		// Update active state
+		this.updateActiveState(pinnedContainer);
 
 		// Insert pinned container at the top
 		navFilesContainer.insertBefore(pinnedContainer, navFilesContainer.firstChild);
@@ -195,10 +268,10 @@ export class PinManager {
 			titleEl.appendChild(collapseIcon);
 		}
 
-		// Add file/folder icon
+		// Add file/folder label
 		const iconEl = document.createElement("div");
 		iconEl.classList.add(isFolder ? "nav-folder-title-content" : "nav-file-title-content");
-		iconEl.textContent = file.name;
+		iconEl.textContent = this.getPinnedItemDisplayName(file);
 		titleEl.appendChild(iconEl);
 
 		wrapper.appendChild(titleEl);
@@ -279,6 +352,17 @@ export class PinManager {
 		this.addDragDropHandlers(wrapper, file.path);
 
 		return wrapper;
+	}
+
+	/**
+	 * Get the label shown for a pinned item.
+	 */
+	private getPinnedItemDisplayName(file: TAbstractFile): string {
+		if (file instanceof TFile) {
+			return file.basename;
+		}
+
+		return file.name;
 	}
 
 	/**

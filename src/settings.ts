@@ -33,6 +33,62 @@ export class PinSettingTab extends PluginSettingTab {
 					})
 			);
 
+		// Pinned-top icon setting
+		new Setting(containerEl)
+			.setName("Show pin icon for pinned items")
+			.setDesc("Display the pin icon before items pinned at the top of the file explorer.")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.showPinnedTopIcon)
+					.onChange(async (value) => {
+						this.plugin.settings.showPinnedTopIcon = value;
+						await this.plugin.saveSettings();
+						this.plugin.pinManager.refreshFileExplorer();
+					})
+			);
+
+		// Main explorer icon setting
+		new Setting(containerEl)
+			.setName("Show pin icon for main explorer items")
+			.setDesc("Display the pin icon after items in the main file explorer.")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.showMainExplorerPinIcon)
+					.onChange(async (value) => {
+						this.plugin.settings.showMainExplorerPinIcon = value;
+						await this.plugin.saveSettings();
+						this.plugin.pinManager.refreshFileExplorer();
+					})
+			);
+
+		// Pinned header label setting
+		new Setting(containerEl)
+			.setName("Show pinned header label")
+			.setDesc("Display the pinned header above pinned items at the top of the file explorer.")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.showPinnedHeaderLabel)
+					.onChange(async (value) => {
+						this.plugin.settings.showPinnedHeaderLabel = value;
+						await this.plugin.saveSettings();
+						this.plugin.pinManager.refreshFileExplorer();
+					})
+			);
+
+		// Sticky pinned items setting
+		new Setting(containerEl)
+			.setName("Keep pinned items visible while scrolling")
+			.setDesc("Keep the pinned section stuck to the top of the file explorer while you scroll.")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.keepPinnedItemsVisible)
+					.onChange(async (value) => {
+						this.plugin.settings.keepPinnedItemsVisible = value;
+						await this.plugin.saveSettings();
+						this.plugin.pinManager.refreshFileExplorer();
+					})
+			);
+
 		// Display pinned items count
 		new Setting(containerEl)
 			.setName("Pinned items")

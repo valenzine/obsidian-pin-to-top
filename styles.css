@@ -1,62 +1,227 @@
 /*
- * Pin to Top Plugin Styles
- * 
- * Styles for pinned items in the file explorer
+ * Pin to Top Plugin - Premium Theme-Aware Styles
+ *
+ * Elegant, modern styling that adapts seamlessly to any Obsidian theme.
  */
 
-/* Pinned items container at the top of file explorer */
+/* ===== Container ===== */
 .pin-to-top-container {
-	border-bottom: 1px solid var(--background-modifier-border);
-	padding-bottom: 4px;
-	margin-bottom: 4px;
+	position: relative;
+	margin-bottom: 8px;
+	transition:
+		border-color 0.2s ease,
+		box-shadow 0.2s ease;
 }
 
-/* Add pin icon only to direct pinned items (not nested content) */
-.pin-to-top-container > .pin-to-top-item > .nav-file-title::before,
-.pin-to-top-container > .pin-to-top-item > .nav-folder-title::before {
+body.pin-to-top-keep-pinned-items-visible .pin-to-top-container {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	background-color: var(--background-primary);
+	padding: 6px 0px 0px !important;
+	border-radius: 4px;
+}
+
+/* ===== Section Header ===== */
+.pin-to-top-header {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 2px 6px 10px;
+	margin: -2px -2px 4px;
+	font-size: var(--font-ui-smaller, 11px);
+	font-weight: 700;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	user-select: none;
+	border-bottom: 1px solid var(--background-modifier-border);
+	opacity: 0.75;
+	transition: opacity 0.2s ease;
+}
+
+.pin-to-top-container:hover .pin-to-top-header {
+	opacity: 1;
+}
+
+.pin-to-top-header-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 13px;
+	height: 13px;
+	color: var(--text-accent);
+}
+
+.pin-to-top-header-icon svg {
+	width: 100%;
+	height: 100%;
+	stroke-width: 2.5px;
+}
+
+/* ===== Individual Pinned Items ===== */
+.pin-to-top-item {
+	position: relative;
+	cursor: pointer;
+	margin-bottom: 2px;
+	transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.pin-to-top-item:last-child {
+	margin-bottom: 0;
+}
+
+.pin-to-top-item > .nav-file-title,
+.pin-to-top-item > .nav-folder-title {
+	display: flex;
+	align-items: center;
+	padding: 5px 8px;
+	border-radius: var(--radius-s, 5px);
+	border: 1px solid transparent;
+	transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	font-size: var(--font-ui-small, 13px);
+	line-height: 1.4;
+	color: var(--text-normal);
+}
+
+.pin-to-top-item .nav-file-title-content,
+.pin-to-top-item .nav-folder-title-content {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	flex: 1;
+	min-width: 0;
+}
+
+/* Hover State */
+.pin-to-top-item:hover > .nav-file-title,
+.pin-to-top-item:hover > .nav-folder-title {
+	background-color: var(--background-modifier-hover);
+	border-color: var(
+		--background-modifier-border-hover,
+		var(--background-modifier-border)
+	);
+}
+
+/* Active / Selected State */
+.pin-to-top-item.is-active > .nav-file-title,
+.pin-to-top-item.is-active > .nav-folder-title {
+	background-color: var(--background-modifier-hover);
+	color: var(--text-accent);
+	border-left: 2px solid var(--interactive-accent);
+	padding-left: 6px;
+	font-weight: 500;
+}
+
+/* ===== Drag & Drop ===== */
+.pin-to-top-item.pin-dragging {
+	opacity: 0.4;
+	transform: scale(0.97);
+}
+
+.pin-to-top-item.pin-dragging > .nav-file-title,
+.pin-to-top-item.pin-dragging > .nav-folder-title {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pin-to-top-item.pin-drag-over {
+	position: relative;
+}
+
+.pin-to-top-item.pin-drag-over > .nav-file-title,
+.pin-to-top-item.pin-drag-over > .nav-folder-title {
+	background-color: var(--background-modifier-hover);
+}
+
+/* Animated drop indicator line */
+.pin-to-top-item.pin-drag-over::after {
+	content: "";
+	position: absolute;
+	top: -1px;
+	left: 8px;
+	right: 8px;
+	height: 2px;
+	background-color: var(--interactive-accent);
+	border-radius: 1px;
+	z-index: 1;
+	animation: pin-drop-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pin-drop-pulse {
+	0%,
+	100% {
+		opacity: 0.6;
+	}
+	50% {
+		opacity: 1;
+	}
+}
+
+/* ===== Pin Icon for Top Pinned Items ===== */
+body.pin-to-top-show-pinned-top-icon
+	.pin-to-top-container
+	> .pin-to-top-item
+	> .nav-file-title::before,
+body.pin-to-top-show-pinned-top-icon
+	.pin-to-top-container
+	> .pin-to-top-item
+	> .nav-folder-title::before {
 	content: "";
 	display: inline-block;
 	width: 14px;
 	height: 14px;
-	margin-right: 6px;
+	margin-right: 7px;
+	flex-shrink: 0;
+	background-color: var(--text-accent);
+	-webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12Z"/></svg>');
+	-webkit-mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	-webkit-mask-size: contain;
+	mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12Z"/></svg>');
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	opacity: 0.75;
+	transition:
+		opacity 0.2s ease,
+		transform 0.2s ease;
+}
+
+.pin-to-top-item:hover > .nav-file-title::before,
+.pin-to-top-item:hover > .nav-folder-title::before {
+	opacity: 1 !important;
+	transform: scale(1.1);
+}
+
+/* ===== Main Explorer Pin Indicator ===== */
+body.pin-to-top-show-main-explorer-pin-icon
+	.pin-to-top-pinned
+	> .nav-file-title
+	.nav-file-title-content::after,
+body.pin-to-top-show-main-explorer-pin-icon
+	.pin-to-top-pinned
+	> .nav-folder-title::after {
+	content: "";
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	margin-left: 6px;
 	vertical-align: middle;
-	background-image: url('data:image/svg+xml;utf8,<svg fill="%23999999" viewBox="0 0 489.493 489.493" xmlns="http://www.w3.org/2000/svg"><path d="M485.322,117.705c12.204-12.238-3.274-47.577-34.636-78.93c-30.99-30.99-65.76-46.396-78.401-34.941l-0.246-0.236 l-173.715,156.02c-32.117-27.993-80.684-27.038-111.278,3.534c-5.149,5.157-8.051,12.146-8.051,19.437 c0,7.292,2.901,14.283,8.051,19.431l78.808,78.801L3.902,463.627c-5.148,5.799-5.262,14.655,0.015,20.601 c5.689,6.403,15.497,6.992,21.916,1.294l182.575-162.137l7.84,7.829l40.601,40.603l0,0l30.336,30.329 c5.15,5.147,12.139,8.039,19.424,8.039c7.278,0,14.272-2.898,19.419-8.056c30.561-30.573,31.524-79.158,3.539-111.27L484.771,118.03 C484.927,117.892,485.177,117.861,485.322,117.705z"/></svg>');
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: center;
-	opacity: 0.7;
+	background-color: var(--text-muted);
+	-webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12Z"/></svg>');
+	-webkit-mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	-webkit-mask-size: contain;
+	mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12Z"/></svg>');
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	opacity: 0.35;
+	transition: opacity 0.2s ease;
 }
 
-/* Subtle highlight for pinned items in the container */
-.pin-to-top-container > .pin-to-top-item > .nav-file-title,
-.pin-to-top-container > .pin-to-top-item > .nav-folder-title {
-	background-color: var(--background-modifier-hover);
-	border-radius: 4px;
-}
-
-/* Style pinned items to look clickable */
+/* ===== Cursor States ===== */
 .pin-to-top-item {
-	cursor: pointer;
-	transition: opacity 0.2s, transform 0.2s;
-}
-
-.pin-to-top-item .nav-folder-title,
-.pin-to-top-item .nav-file-title {
-	padding: 2px 6px;
-}
-
-/* Drag and drop states */
-.pin-to-top-item.pin-dragging {
-	opacity: 0.4;
-}
-
-.pin-to-top-item.pin-drag-over {
-	border-top: 2px solid var(--interactive-accent);
-	margin-top: -2px;
-}
-
-/* Show draggable cursor on hover */
-.pin-to-top-item:hover {
 	cursor: grab;
 }
 
@@ -64,35 +229,19 @@
 	cursor: grabbing;
 }
 
-/* Hide collapse indicator for pinned folders (they act as links) */
+/* Hide collapse indicator for pinned folders */
 .pin-to-top-item .nav-folder-collapse-indicator {
 	display: none;
 }
 
-/* Mark original pinned items with a subtle indicator */
-/* Works for both items in folders and root-level items */
-.pin-to-top-pinned > .nav-file-title .nav-file-title-content::after,
-.pin-to-top-pinned > .nav-folder-title::after {
-	content: "";
-	display: inline-block;
-	width: 10px;
-	height: 10px;
-	margin-left: 6px;
-	vertical-align: middle;
-	background-image: url('data:image/svg+xml;utf8,<svg fill="%23999999" viewBox="0 0 489.493 489.493" xmlns="http://www.w3.org/2000/svg"><path d="M485.322,117.705c12.204-12.238-3.274-47.577-34.636-78.93c-30.99-30.99-65.76-46.396-78.401-34.941l-0.246-0.236 l-173.715,156.02c-32.117-27.993-80.684-27.038-111.278,3.534c-5.149,5.157-8.051,12.146-8.051,19.437 c0,7.292,2.901,14.283,8.051,19.431l78.808,78.801L3.902,463.627c-5.148,5.799-5.262,14.655,0.015,20.601 c5.689,6.403,15.497,6.992,21.916,1.294l182.575-162.137l7.84,7.829l40.601,40.603l0,0l30.336,30.329 c5.15,5.147,12.139,8.039,19.424,8.039c7.278,0,14.272-2.898,19.419-8.056c30.561-30.573,31.524-79.158,3.539-111.27L484.771,118.03 C484.927,117.892,485.177,117.861,485.322,117.705z"/></svg>');
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: center;
-	opacity: 0.4;
-}
-
-/* Settings tab styles */
+/* ===== Settings Tab Styles ===== */
 .pin-to-top-settings-list {
 	margin-top: 10px;
 	border: 1px solid var(--background-modifier-border);
-	border-radius: 4px;
+	border-radius: var(--radius-m, 6px);
 	max-height: 300px;
 	overflow-y: auto;
+	background: var(--background-primary);
 }
 
 .pin-to-top-settings-item {
@@ -101,6 +250,11 @@
 	align-items: center;
 	padding: 8px 12px;
 	border-bottom: 1px solid var(--background-modifier-border);
+	transition: background-color 0.15s ease;
+}
+
+.pin-to-top-settings-item:hover {
+	background-color: var(--background-modifier-hover);
 }
 
 .pin-to-top-settings-item:last-child {
@@ -115,8 +269,12 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	margin-right: 10px;
+	color: var(--text-normal);
 }
 
 .pin-to-top-unpin-button {
 	flex-shrink: 0;
+	font-size: var(--font-ui-smaller);
+	padding: 4px 10px;
+	border-radius: var(--radius-s, 4px);
 }

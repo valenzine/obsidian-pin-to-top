@@ -8,6 +8,14 @@ export interface PinPluginSettings {
 	pinnedItems: string[];
 	/** Automatically expand folders when clicking pinned folder items */
 	autoExpandFolders: boolean;
+	/** Show the pin icon before items pinned at the top */
+	showPinnedTopIcon: boolean;
+	/** Show the pin icon after items in the main explorer */
+	showMainExplorerPinIcon: boolean;
+	/** Show the "Pinned" label in the pinned header */
+	showPinnedHeaderLabel: boolean;
+	/** Keep pinned items visible at the top while scrolling */
+	keepPinnedItemsVisible: boolean;
 }
 
 /**
@@ -23,4 +31,8 @@ export interface FileExplorerView {
 export const DEFAULT_SETTINGS: PinPluginSettings = {
 	pinnedItems: [],
 	autoExpandFolders: true,
+	showPinnedTopIcon: true,
+	showMainExplorerPinIcon: true,
+	showPinnedHeaderLabel: true,
+	keepPinnedItemsVisible: false,
 };
