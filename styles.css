@@ -12,8 +12,14 @@
 }
 
 /* Add pin icon only to direct pinned items (not nested content) */
-.pin-to-top-container > .pin-to-top-item > .nav-file-title::before,
-.pin-to-top-container > .pin-to-top-item > .nav-folder-title::before {
+body.pin-to-top-show-pinned-top-icon
+	.pin-to-top-container
+	> .pin-to-top-item
+	> .nav-file-title::before,
+body.pin-to-top-show-pinned-top-icon
+	.pin-to-top-container
+	> .pin-to-top-item
+	> .nav-folder-title::before {
 	content: "";
 	display: inline-block;
 	width: 14px;
@@ -71,8 +77,13 @@
 
 /* Mark original pinned items with a subtle indicator */
 /* Works for both items in folders and root-level items */
-.pin-to-top-pinned > .nav-file-title .nav-file-title-content::after,
-.pin-to-top-pinned > .nav-folder-title::after {
+body.pin-to-top-show-main-explorer-pin-icon
+	.pin-to-top-pinned
+	> .nav-file-title
+	.nav-file-title-content::after,
+body.pin-to-top-show-main-explorer-pin-icon
+	.pin-to-top-pinned
+	> .nav-folder-title::after {
 	content: "";
 	display: inline-block;
 	width: 10px;

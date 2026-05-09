@@ -30,6 +30,20 @@ export class PinManager {
 	}
 
 	/**
+	 * Apply settings-driven display classes for pin icons.
+	 */
+	applyExplorerDisplaySettings(): void {
+		document.body.classList.toggle(
+			"pin-to-top-show-pinned-top-icon",
+			this.plugin.settings.showPinnedTopIcon
+		);
+		document.body.classList.toggle(
+			"pin-to-top-show-main-explorer-pin-icon",
+			this.plugin.settings.showMainExplorerPinIcon
+		);
+	}
+
+	/**
 	 * Check if an item is pinned
 	 */
 	isPinned(path: string): boolean {
@@ -102,6 +116,8 @@ export class PinManager {
 	 * Refresh the file explorer to show pinned items at top
 	 */
 	refreshFileExplorer(): void {
+		this.applyExplorerDisplaySettings();
+
 		const leaves = this.getFileExplorerLeaves();
 
 		for (const leaf of leaves) {

@@ -12,6 +12,7 @@ export default class PinPlugin extends Plugin {
 
 		// Initialize pin manager
 		this.pinManager = new PinManager(this.app, this);
+		this.pinManager.applyExplorerDisplaySettings();
 
 		// Add settings tab
 		this.addSettingTab(new PinSettingTab(this.app, this));
@@ -143,6 +144,11 @@ export default class PinPlugin extends Plugin {
 		// Remove pinned classes
 		const pinnedItems = document.querySelectorAll(".pin-to-top-pinned");
 		pinnedItems.forEach((item) => item.classList.remove("pin-to-top-pinned"));
+
+		document.body.classList.remove(
+			"pin-to-top-show-pinned-top-icon",
+			"pin-to-top-show-main-explorer-pin-icon"
+		);
 	}
 
 	async loadSettings() {

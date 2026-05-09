@@ -33,6 +33,34 @@ export class PinSettingTab extends PluginSettingTab {
 					})
 			);
 
+		// Pinned-top icon setting
+		new Setting(containerEl)
+			.setName("Show pin icon for pinned items")
+			.setDesc("Display the pin icon before items pinned at the top of the file explorer.")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.showPinnedTopIcon)
+					.onChange(async (value) => {
+						this.plugin.settings.showPinnedTopIcon = value;
+						await this.plugin.saveSettings();
+						this.plugin.pinManager.applyExplorerDisplaySettings();
+					})
+			);
+
+		// Main explorer icon setting
+		new Setting(containerEl)
+			.setName("Show pin icon for main explorer items")
+			.setDesc("Display the pin icon after items in the main file explorer.")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.showMainExplorerPinIcon)
+					.onChange(async (value) => {
+						this.plugin.settings.showMainExplorerPinIcon = value;
+						await this.plugin.saveSettings();
+						this.plugin.pinManager.applyExplorerDisplaySettings();
+					})
+			);
+
 		// Display pinned items count
 		new Setting(containerEl)
 			.setName("Pinned items")
