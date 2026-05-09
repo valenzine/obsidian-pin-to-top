@@ -154,7 +154,8 @@ export default class PinPlugin extends Plugin {
 
 		document.body.classList.remove(
 			"pin-to-top-show-pinned-top-icon",
-			"pin-to-top-show-main-explorer-pin-icon"
+			"pin-to-top-show-main-explorer-pin-icon",
+			"pin-to-top-keep-pinned-items-visible"
 		);
 	}
 

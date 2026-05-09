@@ -14,6 +14,8 @@ export interface PinPluginSettings {
 	showMainExplorerPinIcon: boolean;
 	/** Show the "Pinned" label in the pinned header */
 	showPinnedHeaderLabel: boolean;
+	/** Keep pinned items visible at the top while scrolling */
+	keepPinnedItemsVisible: boolean;
 }
 
 /**
@@ -32,4 +34,5 @@ export const DEFAULT_SETTINGS: PinPluginSettings = {
 	showPinnedTopIcon: true,
 	showMainExplorerPinIcon: true,
 	showPinnedHeaderLabel: true,
+	keepPinnedItemsVisible: false,
 };

@@ -41,6 +41,10 @@ export class PinManager {
 			"pin-to-top-show-main-explorer-pin-icon",
 			this.plugin.settings.showMainExplorerPinIcon
 		);
+		document.body.classList.toggle(
+			"pin-to-top-keep-pinned-items-visible",
+			this.plugin.settings.keepPinnedItemsVisible
+		);
 	}
 
 	/**

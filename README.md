@@ -44,6 +44,7 @@ Go to **Settings → Community plugins → Pin to Top** to:
 - Unpin individual items
 - Clear all pins at once
 - Toggle the "Pinned" header label
+- Keep pinned items visible while scrolling
 - Toggle the pin icon before pinned items at the top of the file explorer
 - Toggle the pin icon after pinned items in the main file explorer
 

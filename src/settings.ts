@@ -75,6 +75,20 @@ export class PinSettingTab extends PluginSettingTab {
 					})
 			);
 
+		// Sticky pinned items setting
+		new Setting(containerEl)
+			.setName("Keep pinned items visible while scrolling")
+			.setDesc("Keep the pinned section stuck to the top of the file explorer while you scroll.")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.keepPinnedItemsVisible)
+					.onChange(async (value) => {
+						this.plugin.settings.keepPinnedItemsVisible = value;
+						await this.plugin.saveSettings();
+						this.plugin.pinManager.refreshFileExplorer();
+					})
+			);
+
 		// Display pinned items count
 		new Setting(containerEl)
 			.setName("Pinned items")
