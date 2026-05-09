@@ -12,6 +12,8 @@ export interface PinPluginSettings {
 	showPinnedTopIcon: boolean;
 	/** Show the pin icon after items in the main explorer */
 	showMainExplorerPinIcon: boolean;
+	/** Show the "Pinned" label in the pinned header */
+	showPinnedHeaderLabel: boolean;
 }
 
 /**
@@ -29,4 +31,5 @@ export const DEFAULT_SETTINGS: PinPluginSettings = {
 	autoExpandFolders: true,
 	showPinnedTopIcon: true,
 	showMainExplorerPinIcon: true,
+	showPinnedHeaderLabel: true,
 };

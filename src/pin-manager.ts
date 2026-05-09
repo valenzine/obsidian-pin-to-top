@@ -201,18 +201,20 @@ export class PinManager {
 		const pinnedContainer = document.createElement("div");
 		pinnedContainer.classList.add(PINNED_CONTAINER_CLASS);
 
-		// Add section header
-		const header = document.createElement("div");
-		header.classList.add("pin-to-top-header");
-		const headerIcon = document.createElement("span");
-		headerIcon.classList.add("pin-to-top-header-icon");
-		setIcon(headerIcon, "pin");
-		header.appendChild(headerIcon);
-		const headerText = document.createElement("span");
-		headerText.classList.add("pin-to-top-header-text");
-		headerText.textContent = "Pinned";
-		header.appendChild(headerText);
-		pinnedContainer.appendChild(header);
+		// Add section header when enabled
+		if (this.plugin.settings.showPinnedHeaderLabel) {
+			const header = document.createElement("div");
+			header.classList.add("pin-to-top-header");
+			const headerIcon = document.createElement("span");
+			headerIcon.classList.add("pin-to-top-header-icon");
+			setIcon(headerIcon, "pin");
+			header.appendChild(headerIcon);
+			const headerText = document.createElement("span");
+			headerText.classList.add("pin-to-top-header-text");
+			headerText.textContent = "Pinned";
+			header.appendChild(headerText);
+			pinnedContainer.appendChild(header);
+		}
 
 		// Create pinned item elements (not clones - custom lightweight elements)
 		for (const path of pinnedPaths) {

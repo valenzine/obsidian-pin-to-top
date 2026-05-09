@@ -43,6 +43,7 @@ Go to **Settings → Community plugins → Pin to Top** to:
 - View all pinned items
 - Unpin individual items
 - Clear all pins at once
+- Toggle the "Pinned" header label
 - Toggle the pin icon before pinned items at the top of the file explorer
 - Toggle the pin icon after pinned items in the main file explorer
 

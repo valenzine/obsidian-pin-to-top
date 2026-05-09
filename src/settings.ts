@@ -43,7 +43,7 @@ export class PinSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.showPinnedTopIcon = value;
 						await this.plugin.saveSettings();
-						this.plugin.pinManager.applyExplorerDisplaySettings();
+						this.plugin.pinManager.refreshFileExplorer();
 					})
 			);
 
@@ -57,7 +57,21 @@ export class PinSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.showMainExplorerPinIcon = value;
 						await this.plugin.saveSettings();
-						this.plugin.pinManager.applyExplorerDisplaySettings();
+						this.plugin.pinManager.refreshFileExplorer();
+					})
+			);
+
+		// Pinned header label setting
+		new Setting(containerEl)
+			.setName("Show pinned header label")
+			.setDesc("Display the pinned header above pinned items at the top of the file explorer.")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.showPinnedHeaderLabel)
+					.onChange(async (value) => {
+						this.plugin.settings.showPinnedHeaderLabel = value;
+						await this.plugin.saveSettings();
+						this.plugin.pinManager.refreshFileExplorer();
 					})
 			);
 
