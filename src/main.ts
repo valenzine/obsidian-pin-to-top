@@ -13,9 +13,6 @@ export default class PinPlugin extends Plugin {
 		// Initialize pin manager
 		this.pinManager = new PinManager(this.app, this);
 
-		// Clean up any deleted items on load
-		await this.pinManager.cleanupDeletedItems();
-
 		// Add settings tab
 		this.addSettingTab(new PinSettingTab(this.app, this));
 
